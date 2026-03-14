@@ -8,18 +8,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="icon" href="https://fav.farm/🛡️">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+<style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden; /* Evita que a tela balance para os lados no celular */
+        }
+        
+        .glass { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+        }
+
+        /* Ajuste para telas pequenas */
+        @media (max-width: 640px) {
+            .glass {
+                margin: 0;
+                border-radius: 1.5rem;
+                width: 100%;
+            }
+            h1 { font-size: 1.875rem !important; }
+            .p-8 { padding: 1.5rem !important; } /* Diminui o recuo interno no mobile */
+        }
+
         .bg-animate {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #1e1b4b, #020617);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
         }
+
         @keyframes gradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        /* Efeito de brilho no botão */
+        .btn-glow:hover {
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
         }
     </style>
 </head>
