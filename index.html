@@ -166,9 +166,14 @@
         });
         
         // ... (resto do seu código)
-    } catch (error) {
-        console.error(error);
-        alert('Erro de conexão! O servidor pode estar "acordando". Tente novamente em 30 segundos.');
+    } } catch (error) {
+        console.error("Detalhes do erro:", error);
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('placeholder').classList.remove('hidden');
+        
+        // Isso vai nos dizer exatamente o que está acontecendo
+        alert('Opa! O servidor está acordando. Tente enviar o arquivo novamente em 20 segundos.');
+    }
     }
 });
             } finally {
