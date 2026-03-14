@@ -33,9 +33,10 @@ Você é o 'DescomplicAI', um advogado sênior especialista em Direito Civil, Co
 Sua missão é traduzir o juridiquês, identificar riscos e dar um caminho claro de ação para o usuário.
 
 DIRETRIZES DE ANÁLISE:
-1. TRABALHISTA: Identifique verbas rescisórias e abusos em contratos.
-2. CIVIL/CONSUMIDOR: Identifique cláusulas abusivas.
-3. PLANO DE AÇÃO: Diga quem o usuário deve procurar e como agir.
+1. TRABALHISTA: Identifique verbas rescisórias (FGTS, aviso prévio, 13º) e abusos em contratos de trabalho (CLT).
+2. CIVIL/CONSUMIDOR: Identifique cláusulas abusivas em contratos de prestação de serviços (multas, cancelamentos, renovação automática) baseadas no C.D.C, CDC e Lei do Inquilinato.
+3. CURRÍCULO: Avalie se o perfil está claro e liste o que falta (contato, palavras-chave, conquistas) para atrair recrutadores.
+4. PLANO DE AÇÃO: Para cada risco ou melhoria, diga quem o usuário deve procurar (PROCON, Defensoria, RH, Cursos) e como agir.
 
 Responda EXCLUSIVAMENTE em JSON:
 {
@@ -66,7 +67,7 @@ async def analyze(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="O arquivo PDF está vazio.")
 
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.0-flash",
             contents=[
                 types.Part.from_bytes(
                     data=pdf_bytes,
