@@ -116,16 +116,17 @@
         </div>
     </div>
 
-    <script>
+ <script>
         // Variável global para guardar os dados
         let dadosUltimaAnalise = null;
 
-        // Atualiza o nome do arquivo selecionado
+        // Atualiza o nome do arquivo selecionado visualmente
         document.getElementById('pdfFile').onchange = function() {
             if (this.files[0]) {
-                document.getElementById('fileName').innerText = this.files[0].name;
-                document.getElementById('fileName').classList.remove('text-slate-400');
-                document.getElementById('fileName').classList.add('text-blue-400', 'font-bold');
+                const fileName = document.getElementById('fileName');
+                fileName.innerText = this.files[0].name;
+                fileName.classList.remove('text-slate-400');
+                fileName.classList.add('text-blue-400', 'font-bold');
             }
         };
 
@@ -136,104 +137,95 @@
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
+            // Reset visual da tela
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('placeholder').classList.add('hidden');
             document.getElementById('resultado').classList.add('hidden');
 
             try {
-                // VERIFIQUE SE O SEU PYTHON ESTÁ NA PORTA 8001 OU 8000
+                // Conectando ao Render
                 const response = await fetch('https://descomplicai-caw6.onrender.com/analisar', {
                     method: 'POST',
                     body: formData
                 });
+                
+                if (!response.ok) throw new Error("Erro na resposta do servidor");
+
                 const result = await response.json();
                 
+                // Verifica se o servidor retornou sucesso ou se retornou os dados direto
                 if (result.status === "sucesso") {
                     exibirResultado(result.dados);
+                } else if (result.nivel_risco) {
+                    exibirResultado(result);
                 } else {
-                    alert("Erro: " + result.mensagem);
+                    alert("Erro: " + (result.mensagem || "Resposta inválida do servidor"));
                 }
             } catch (error) {
-                console.error(error);
-                alert(async function enviarParaIA() {
-    // ... (restante do código anterior)
-
-    try {
-        // MUDE ESTA LINHA ABAIXO PARA O LINK DO RENDER:
-        const response = await fetch('https://descomplicai-caw6.onrender.com/analisar', {
-            method: 'POST',
-            body: formData
-        });
-        
-        // ... (resto do seu código)
-    } } catch (error) {
-        console.error("Detalhes do erro:", error);
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('placeholder').classList.remove('hidden');
-        
-        // Isso vai nos dizer exatamente o que está acontecendo
-        alert('Opa! O servidor está acordando. Tente enviar o arquivo novamente em 20 segundos.');
-    }
-    }
-});
+                console.error("Detalhes do erro:", error);
+                alert('O servidor está acordando ou houve um erro de conexão. Tente novamente em 20 segundos.');
+                document.getElementById('placeholder').classList.remove('hidden');
             } finally {
                 document.getElementById('loading').classList.add('hidden');
             }
         }
 
-       function exibirResultado(dados) {
-    dadosUltimaAnalise = dados; 
-    document.getElementById('resultado').classList.remove('hidden');
-    document.getElementById('resumo').innerText = dados.resumo_curto;
-    document.getElementById('veredito').innerText = dados.veredito;
-
-    // 1. Renderiza Pontos de Atenção (Vermelho)
-    const perigosDiv = document.getElementById('perigos');
-    perigosDiv.innerHTML = dados.pontos_perigosos.map(p => `
-        <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-r-xl">
-            <p class="text-sm font-bold text-red-900">${p.clausula}</p>
-            <p class="text-xs text-red-700 mt-1">${p.explicacao}</p>
-        </div>
-    `).join('');
-
-    // 2. Cria/Atualiza a seção de Próximos Passos (Verde/Esmeralda)
-    let acoesDiv = document.getElementById('acoesSugeridas');
-    if (!acoesDiv) {
-        acoesDiv = document.createElement('div');
-        acoesDiv.id = 'acoesSugeridas';
-        acoesDiv.className = "mt-6 space-y-4";
-        document.getElementById('resultado').insertBefore(acoesDiv, document.getElementById('veredito').parentNode);
-    }
-
-    acoesDiv.innerHTML = `
-        <h3 class="text-slate-900 font-bold text-lg mb-2 flex items-center gap-2">
-            <span class="text-emerald-500">✔</span> Plano de Ação:
-        </h3>
-        <div class="grid gap-3">
-            ${dados.proximos_passos.map(passo => `
-                <div class="bg-emerald-50 border-l-4 border-emerald-500 p-3 rounded-r-xl">
-                    <p class="text-sm font-bold text-emerald-900">Procurar: ${passo.quem}</p>
-                    <p class="text-xs text-emerald-700 mt-1">${passo.como}</p>
+        function exibirResultado(dados) {
+            dadosUltimaAnalise = dados; 
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.classList.remove('hidden');
+            
+            // Monta o esqueleto do resultado
+            resultadoDiv.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <span id="cardRisco"></span>
                 </div>
-            `).join('')}
-        </div>
-    `;
+                
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <h3 class="text-slate-900 font-bold mb-2">📄 Resumo da Análise:</h3>
+                    <p id="resumo" class="text-slate-600 text-sm leading-relaxed">${dados.resumo_curto}</p>
+                </div>
 
-    // 3. Botão de Download e Card de Risco
-    if (!document.getElementById('btnDownload')) {
-        const btn = document.createElement('button');
-        btn.id = 'btnDownload';
-        btn.className = "w-full mt-6 bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2";
-        btn.innerHTML = `<span>Baixar Relatório Completo</span> 📥`;
-        btn.onclick = gerarPDF;
-        document.getElementById('resultado').appendChild(btn);
-    }
+                <div id="perigos" class="space-y-3">
+                    <h3 class="text-slate-900 font-bold text-lg flex items-center gap-2">
+                        <span class="text-red-500">⚠️</span> Pontos de Atenção:
+                    </h3>
+                    ${dados.pontos_perigosos.map(p => `
+                        <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-r-xl">
+                            <p class="text-sm font-bold text-red-900">${p.clausula}</p>
+                            <p class="text-xs text-red-700 mt-1">${p.explicacao}</p>
+                        </div>
+                    `).join('')}
+                </div>
 
-    const card = document.getElementById('cardRisco');
-    const cores = { 'Baixo': 'bg-emerald-500', 'Médio': 'bg-orange-500', 'Alto': 'bg-rose-600' };
-    card.className = `inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-white shadow-sm ${cores[dados.nivel_risco] || 'bg-gray-500'}`;
-    card.innerText = `Risco ${dados.nivel_risco}`;
-}
+                <div id="acoes" class="space-y-3 mt-6">
+                    <h3 class="text-slate-900 font-bold text-lg flex items-center gap-2">
+                        <span class="text-emerald-500">✔</span> Plano de Ação:
+                    </h3>
+                    ${dados.proximos_passos.map(passo => `
+                        <div class="bg-emerald-50 border-l-4 border-emerald-500 p-3 rounded-r-xl">
+                            <p class="text-sm font-bold text-emerald-900">Procurar: ${passo.quem}</p>
+                            <p class="text-xs text-emerald-700 mt-1">${passo.como}</p>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 mt-6">
+                    <h3 class="text-blue-900 font-bold mb-1">⚖️ Veredito:</h3>
+                    <p id="veredito" class="text-blue-800 text-sm italic">${dados.veredito}</p>
+                </div>
+
+                <button onclick="gerarPDF()" class="w-full mt-6 bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2">
+                    <span>Baixar Relatório Completo</span> 📥
+                </button>
+            `;
+
+            // Atualiza o Card de Risco
+            const card = document.getElementById('cardRisco');
+            const cores = { 'Baixo': 'bg-emerald-500', 'Médio': 'bg-orange-500', 'Alto': 'bg-rose-600' };
+            card.className = `inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-white shadow-sm ${cores[dados.nivel_risco] || 'bg-gray-500'}`;
+            card.innerText = `Nível: ${dados.nivel_risco}`;
+        }
 
         async function gerarPDF() {
             const { jsPDF } = window.jspdf;
@@ -245,25 +237,27 @@
             doc.text("DescomplicAI - Relatório", 20, 20);
             
             doc.setFontSize(10);
-            doc.text(`Data: ${new Date().toLocaleDateString()} | Risco: ${d.nivel_risco}`, 20, 30);
+            doc.text(`Data: ${new Date().toLocaleDateString()} | Avaliação: ${d.nivel_risco}`, 20, 30);
             doc.line(20, 35, 190, 35);
 
             doc.setFontSize(12);
-            doc.text("Resumo:", 20, 45);
+            doc.text("Resumo da Análise:", 20, 45);
             doc.setFont("helvetica", "normal");
             const splitResumo = doc.splitTextToSize(d.resumo_curto, 170);
             doc.text(splitResumo, 20, 55);
 
             let y = 80;
             doc.setFont("helvetica", "bold");
-            doc.text("Pontos Críticos:", 20, y);
+            doc.text("Detalhes Técnicos:", 20, y);
             y += 10;
 
             d.pontos_perigosos.forEach((p, i) => {
                 if(y > 270) { doc.addPage(); y = 20; }
                 doc.setFontSize(10);
+                doc.setFont("helvetica", "bold");
                 doc.text(`${i+1}. ${p.clausula}`, 20, y);
-                y += 7;
+                y += 6;
+                doc.setFont("helvetica", "normal");
                 const desc = doc.splitTextToSize(p.explicacao, 160);
                 doc.text(desc, 25, y);
                 y += (desc.length * 5) + 5;
