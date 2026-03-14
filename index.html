@@ -155,7 +155,22 @@
                 }
             } catch (error) {
                 console.error(error);
-                alert('Erro de conexão! Verifique se o servidor Python está rodando na porta 8001.');
+                alert(async function enviarParaIA() {
+    // ... (restante do código anterior)
+
+    try {
+        // MUDE ESTA LINHA ABAIXO PARA O LINK DO RENDER:
+        const response = await fetch('https://descomplicai-caw6.onrender.com/analisar', {
+            method: 'POST',
+            body: formData
+        });
+        
+        // ... (resto do seu código)
+    } catch (error) {
+        console.error(error);
+        alert('Erro de conexão! O servidor pode estar "acordando". Tente novamente em 30 segundos.');
+    }
+});
             } finally {
                 document.getElementById('loading').classList.add('hidden');
             }
