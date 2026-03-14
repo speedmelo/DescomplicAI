@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-   <link rel="icon" type="image/png" href="Gemini_Generated_Image_yi67bwyi67bwyi67.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descomplic.AI | Proteção Jurídica</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://fav.farm/🛡️">
-<style>
+    <link rel="icon" type="image/png" href="Gemini_Generated_Image_yi67bwyi67bwyi67.png">
+
+    <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             overflow-x: hidden;
         }
         
         .glass { 
-            background: rgba(255, 255, 255, 0.95); 
+            background: rgba(255, 255, 255, 0.98); 
             backdrop-filter: blur(10px); 
         }
 
@@ -32,100 +33,113 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* AJUSTE PARA DESKTOP FICAR CENTRALIZADO E BONITO */
-        @media (min-width: 768px) {
-            .main-container {
-                min-height: 600px;
-                display: grid;
-                grid-template-columns: 1fr 1.5fr; /* Coluna da direita um pouco maior */
-            }
-        }
-    </style><style>
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            overflow-x: hidden;
-        }
-        
-        .glass { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px); 
-        }
-
-        .bg-animate {
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #1e1b4b, #020617);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* AJUSTE PARA DESKTOP FICAR CENTRALIZADO E BONITO */
-        @media (min-width: 768px) {
-            .main-container {
-                min-height: 600px;
-                display: grid;
-                grid-template-columns: 1fr 1.5fr; /* Coluna da direita um pouco maior */
-            }
-        }
+        /* Estilização da Scrollbar para ficar elegante */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-animate min-h-screen flex items-center justify-center p-2 sm:p-4">
+<body class="bg-animate min-h-screen flex flex-col items-center">
 
-<div class="max-w-6xl w-full glass rounded-[2rem] shadow-2xl overflow-hidden border border-white/20">
-        <div class="main-container flex flex-col md:grid h-full">
+    <div class="max-w-6xl w-full glass rounded-none md:rounded-[2.5rem] shadow-2xl overflow-hidden border-x border-b border-white/20 mt-0 md:mt-8 flex-grow md:flex-initial">
+        <div class="flex flex-col md:grid md:grid-cols-2 min-h-[600px]">
             
-            <div class="bg-slate-900 p-8 text-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-slate-700">
-                <div class="mb-8">
-                   <h1 class="text-3xl font-extrabold mb-2">Descomplic<span class="text-blue-400">.AI</span></h1>
-                    <p class="text-slate-400 text-sm">Descubra riscos no seu contrato antes de assinar. Análise automatizada para apoio informativo. Não substitui advogado</p>
+            <div class="bg-slate-900 p-8 md:p-12 text-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-slate-700">
+                <div class="mb-10 text-center md:text-left">
+                    <img src="Gemini_Generated_Image_dme552dme552dme5.png" alt="Logo" class="h-10 w-auto mb-6 mx-auto md:mx-0">
+                    <h1 class="text-4xl font-extrabold mb-3 tracking-tighter">Descomplic<span class="text-blue-400">.AI</span></h1>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Analise riscos contratuais em segundos com IA. 
+                        <span class="block mt-2 font-bold text-blue-400/80">Trabalhista • Civil • Consumidor</span>
+                    </p>
                 </div>
 
                 <div class="space-y-6">
-                    <div class="group relative border-2 border-dashed border-slate-700 rounded-2xl p-6 transition-all hover:border-blue-500 bg-slate-800/50">
+                    <div class="group relative border-2 border-dashed border-slate-700 rounded-3xl p-8 transition-all hover:border-blue-500 bg-slate-800/50">
                         <input type="file" id="pdfFile" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                         <div class="text-center">
-                            <span class="text-4xl mb-2 block">📄</span>
-                            <p id="fileName" class="text-xs text-slate-400 truncate">Arraste seu PDF ou clique aqui</p>
+                            <span class="text-5xl mb-3 block">📄</span>
+                            <p id="fileName" class="text-sm text-slate-400">Arraste seu PDF ou clique para selecionar</p>
                         </div>
                     </div>
 
-                    <button onclick="enviarParaIA()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg btn-glow transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <button onclick="enviarParaIA()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 text-lg uppercase tracking-widest">
                         <span>Analisar Agora</span>
                     </button>
+                    <p class="text-[10px] text-slate-500 text-center uppercase tracking-tighter">Uso informativo. Não substitui consulta jurídica.</p>
                 </div>
             </div>
 
-            <div class="p-8 bg-white/50 relative min-h-[400px]">
-                <div id="loading" class="hidden absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center rounded-r-[2rem]">
-                    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p class="text-blue-900 font-bold animate-pulse">Descomplicando documento em segundos...</p>
+            <div class="p-6 md:p-12 bg-white relative min-h-[450px] overflow-y-auto">
+                <div id="loading" class="hidden absolute inset-0 bg-white/95 z-20 flex flex-col items-center justify-center p-8 text-center">
+                    <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-6"></div>
+                    <p class="text-slate-900 font-black text-xl animate-pulse uppercase tracking-tighter">Descomplicando Documento...</p>
+                    <p class="text-slate-500 text-sm mt-2">Nossa IA está lendo as entrelinhas para você.</p>
                 </div>
 
-                <div id="placeholder" class="h-full flex flex-col items-center justify-center text-slate-400 opacity-50 text-center">
-                    <span class="text-6xl mb-4">⚖️</span>
-                    <p class="max-w-xs text-lg">Aguardando seu arquivo para iniciar a mágica.</p>
+                <div id="placeholder" class="h-full flex flex-col items-center justify-center text-slate-300 text-center py-10">
+                    <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                        <span class="text-6xl">⚖️</span>
+                    </div>
+                    <h2 class="text-slate-900 font-bold text-xl mb-2">Pronto para começar?</h2>
+                    <p class="max-w-xs text-sm">Suba seu contrato ao lado para identificar cláusulas abusivas e riscos ocultos.</p>
                 </div>
 
-                <div id="resultado" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div id="resultado" class="hidden space-y-8 pb-10">
                     </div>
             </div>
 
         </div>
     </div>
 
- <script>
-        // Variável global para guardar os dados
+    <footer class="w-full bg-slate-900 text-white py-16 px-6 mt-12 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div class="space-y-4 text-center md:text-left">
+                    <img src="Gemini_Generated_Image_dme552dme552dme5.png" alt="Descomplic.AI" class="h-8 w-auto mx-auto md:mx-0 brightness-0 invert">
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-sm mx-auto md:mx-0">
+                        Inteligência Artificial brasileira focada em democratizar o acesso à compreensão jurídica.
+                    </p>
+                </div>
+
+                <div class="space-y-4 text-center md:text-left">
+                    <h4 class="text-blue-400 font-black text-xs uppercase tracking-widest">Segurança</h4>
+                    <ul class="text-slate-300 text-sm space-y-3 font-bold">
+                        <li class="flex items-center justify-center md:justify-start gap-2">🛡️ Processamento Criptografado</li>
+                        <li class="flex items-center justify-center md:justify-start gap-2">🔒 Sem Retenção de Dados</li>
+                        <li class="flex items-center justify-center md:justify-start gap-2">⚡ API de Alta Velocidade</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4 text-center md:text-left">
+                    <h4 class="text-blue-400 font-black text-xs uppercase tracking-widest">Institucional</h4>
+                    <div class="flex flex-col gap-3 text-sm font-bold">
+                        <a href="#" class="text-slate-300 hover:text-white transition-colors">Termos de Uso</a>
+                        <a href="#" class="text-slate-300 hover:text-white transition-colors">Política de Privacidade</a>
+                        <a href="mailto:contato@descomplic.ai" class="text-blue-400 hover:underline">📩 Suporte: contato@descomplic.ai</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                    © 2026 Descomplic.AI - Todos os direitos reservados.
+                </p>
+                <div class="flex gap-3">
+                    <span class="px-3 py-1 bg-green-900/30 text-green-400 text-[10px] font-black rounded-full border border-green-500/30">API ONLINE</span>
+                    <span class="px-3 py-1 bg-blue-900/30 text-blue-400 text-[10px] font-black rounded-full border border-blue-500/30">GEMINI 2.0 FLASH</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
         let dadosUltimaAnalise = null;
 
-        // Atualiza o nome do arquivo selecionado visualmente
         document.getElementById('pdfFile').onchange = function() {
             if (this.files[0]) {
                 const fileName = document.getElementById('fileName');
-                fileName.innerText = this.files[0].name;
+                fileName.innerText = "Selecionado: " + this.files[0].name;
                 fileName.classList.remove('text-slate-400');
                 fileName.classList.add('text-blue-400', 'font-bold');
             }
@@ -133,38 +147,36 @@
 
         async function enviarParaIA() {
             const fileInput = document.getElementById('pdfFile');
-            if (!fileInput.files[0]) return alert("Selecione um PDF primeiro!");
+            if (!fileInput.files[0]) return alert("Por favor, selecione um arquivo PDF!");
 
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
-            // Reset visual da tela
+            // UI Feedback
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('placeholder').classList.add('hidden');
             document.getElementById('resultado').classList.add('hidden');
 
             try {
-                // Conectando ao Render
+                // Rota corrigida para /analyze em inglês conforme o server.py
                 const response = await fetch('https://descomplicai-caw6.onrender.com/analyze', {
                     method: 'POST',
                     body: formData
                 });
                 
-                if (!response.ok) throw new Error("Erro na resposta do servidor");
+                if (!response.ok) throw new Error("Falha na conexão com o motor.");
 
                 const result = await response.json();
                 
-                // Verifica se o servidor retornou sucesso ou se retornou os dados direto
                 if (result.status === "sucesso") {
                     exibirResultado(result.dados);
-                } else if (result.nivel_risco) {
-                    exibirResultado(result);
                 } else {
-                    alert("Erro: " + (result.mensagem || "Resposta inválida do servidor"));
+                    throw new Error("Resposta inesperada do servidor.");
                 }
+
             } catch (error) {
-                console.error("Detalhes do erro:", error);
-                alert('O servidor está acordando ou houve um erro de conexão. Tente novamente em 20 segundos.');
+                console.error(error);
+                alert('O servidor está processando ou acordando. Tente novamente em alguns segundos.');
                 document.getElementById('placeholder').classList.remove('hidden');
             } finally {
                 document.getElementById('loading').classList.add('hidden');
@@ -176,136 +188,78 @@
             const resultadoDiv = document.getElementById('resultado');
             resultadoDiv.classList.remove('hidden');
             
-            // Monta o esqueleto do resultado
+            const coresRisco = { 
+                'Baixo': 'bg-emerald-500', 
+                'Médio': 'bg-amber-500', 
+                'Alto': 'bg-rose-600' 
+            };
+
             resultadoDiv.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <span id="cardRisco"></span>
-                </div>
-                
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <h3 class="text-slate-900 font-bold mb-2">📄 Resumo da Análise:</h3>
-                    <p id="resumo" class="text-slate-600 text-sm leading-relaxed">${dados.resumo_curto}</p>
-                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="flex justify-between items-center">
+                        <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-white ${coresRisco[dados.nivel_risco] || 'bg-slate-500'}">
+                            Risco ${dados.nivel_risco}
+                        </span>
+                    </div>
 
-                <div id="perigos" class="space-y-3">
-                    <h3 class="text-slate-900 font-bold text-lg flex items-center gap-2">
-                        <span class="text-red-500">⚠️</span> Pontos de Atenção:
-                    </h3>
-                    ${dados.pontos_perigosos.map(p => `
-                        <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-r-xl">
-                            <p class="text-sm font-bold text-red-900">${p.clausula}</p>
-                            <p class="text-xs text-red-700 mt-1">${p.explicacao}</p>
-                        </div>
-                    `).join('')}
-                </div>
+                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                        <h3 class="text-slate-900 font-black text-sm uppercase mb-3 tracking-widest">Resumo Executivo</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed font-medium">${dados.resumo_curto}</p>
+                    </div>
 
-                <div id="acoes" class="space-y-3 mt-6">
-                    <h3 class="text-slate-900 font-bold text-lg flex items-center gap-2">
-                        <span class="text-emerald-500">✔</span> Plano de Ação:
-                    </h3>
-                    ${dados.proximos_passos.map(passo => `
-                        <div class="bg-emerald-50 border-l-4 border-emerald-500 p-3 rounded-r-xl">
-                            <p class="text-sm font-bold text-emerald-900">Procurar: ${passo.quem}</p>
-                            <p class="text-xs text-emerald-700 mt-1">${passo.como}</p>
-                        </div>
-                    `).join('')}
-                </div>
+                    <div class="space-y-4">
+                        <h3 class="text-slate-900 font-black text-sm uppercase tracking-widest flex items-center gap-2">
+                            <span class="text-rose-500">●</span> Cláusulas Críticas
+                        </h3>
+                        ${dados.pontos_perigosos.map(p => `
+                            <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                                <p class="text-sm font-bold text-slate-900">${p.clausula}</p>
+                                <p class="text-xs text-slate-500 mt-2 leading-relaxed">${p.explicacao}</p>
+                            </div>
+                        `).join('')}
+                    </div>
 
-                <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 mt-6">
-                    <h3 class="text-blue-900 font-bold mb-1">⚖️ Veredito:</h3>
-                    <p id="veredito" class="text-blue-800 text-sm italic">${dados.veredito}</p>
-                </div>
+                    <div class="space-y-4">
+                        <h3 class="text-slate-900 font-black text-sm uppercase tracking-widest flex items-center gap-2">
+                            <span class="text-emerald-500">●</span> Plano de Ação
+                        </h3>
+                        ${dados.proximos_passos.map(passo => `
+                            <div class="bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
+                                <p class="text-xs font-black text-emerald-800 uppercase mb-1">${passo.quem}</p>
+                                <p class="text-sm text-emerald-700 font-medium">${passo.como}</p>
+                            </div>
+                        `).join('')}
+                    </div>
 
-                <button onclick="gerarPDF()" class="w-full mt-6 bg-slate-800 text-white py-3 rounded-xl font-bold hover:bg-black transition-all flex items-center justify-center gap-2">
-                    <span>Baixar Relatório Completo</span> 📥
-                </button>
+                    <div class="p-6 bg-blue-600 rounded-3xl text-white shadow-xl shadow-blue-200">
+                        <h3 class="font-black text-xs uppercase tracking-widest mb-2 opacity-80">Veredito Final</h3>
+                        <p class="text-sm font-bold italic leading-relaxed">"${dados.veredito}"</p>
+                    </div>
+
+                    <button onclick="gerarPDF()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all flex items-center justify-center gap-2 uppercase tracking-tighter text-sm">
+                        <span>Baixar Relatório Jurídico</span>
+                    </button>
+                </div>
             `;
-
-            // Atualiza o Card de Risco
-            const card = document.getElementById('cardRisco');
-            const cores = { 'Baixo': 'bg-emerald-500', 'Médio': 'bg-orange-500', 'Alto': 'bg-rose-600' };
-            card.className = `inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-white shadow-sm ${cores[dados.nivel_risco] || 'bg-gray-500'}`;
-            card.innerText = `Nível: ${dados.nivel_risco}`;
         }
 
         async function gerarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const d = dadosUltimaAnalise;
+            if(!d) return;
 
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
-            doc.text("Descomplic.AI - Relatório", 20, 20);
-            
+            doc.text("Relatório de Análise Descomplic.AI", 20, 20);
             doc.setFontSize(10);
-            doc.text(`Data: ${new Date().toLocaleDateString()} | Avaliação: ${d.nivel_risco}`, 20, 30);
-            doc.line(20, 35, 190, 35);
-
-            doc.setFontSize(12);
-            doc.text("Resumo da Análise:", 20, 45);
-            doc.setFont("helvetica", "normal");
+            doc.text(`Avaliação de Risco: ${d.nivel_risco}`, 20, 30);
+            
             const splitResumo = doc.splitTextToSize(d.resumo_curto, 170);
-            doc.text(splitResumo, 20, 55);
+            doc.setFont("helvetica", "normal");
+            doc.text(splitResumo, 20, 45);
 
-            let y = 80;
-            doc.setFont("helvetica", "bold");
-            doc.text("Detalhes Técnicos:", 20, y);
-            y += 10;
-
-            d.pontos_perigosos.forEach((p, i) => {
-                if(y > 270) { doc.addPage(); y = 20; }
-                doc.setFontSize(10);
-                doc.setFont("helvetica", "bold");
-                doc.text(`${i+1}. ${p.clausula}`, 20, y);
-                y += 6;
-                doc.setFont("helvetica", "normal");
-                const desc = doc.splitTextToSize(p.explicacao, 160);
-                doc.text(desc, 25, y);
-                y += (desc.length * 5) + 5;
-            });
-
-            doc.save("Analise_Descomplic.AI.pdf");
+            doc.save("Analise_DescomplicAI.pdf");
         }
     </script>
-<footer class="mt-20 border-t border-slate-300 bg-white py-12">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
-            <div class="space-y-4">
-                <img src="Gemini_Generated_Image_dme552dme552dme5.png" alt="Descomplic.AI" class="h-10 w-auto">
-                <p class="text-slate-800 text-sm font-medium leading-relaxed">
-                    Transformando a complexidade jurídica em clareza digital. Inteligência Artificial a serviço da sua segurança contratual.
-                </p>
-            </div>
-
-            <div class="space-y-4">
-                <h4 class="text-slate-950 font-black text-xs uppercase tracking-widest">Segurança</h4>
-                <div class="flex flex-col gap-3 text-slate-700 text-sm font-bold">
-                    <span class="flex items-center gap-2">🛡️ Processamento Privado</span>
-                    <span class="flex items-center gap-2">🔒 Sem Log de Dados</span>
-                    <span class="flex items-center gap-2">⚡ Análise Instantânea</span>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <h4 class="text-slate-950 font-black text-xs uppercase tracking-widest">Informações</h4>
-                <div class="flex flex-col gap-3 text-slate-700 text-sm font-bold">
-                    <a href="#" class="text-blue-600 hover:text-blue-800 transition-colors">Termos de Uso</a>
-                    <a href="#" class="text-blue-600 hover:text-blue-800 transition-colors">Política de Privacidade</a>
-                    <a href="mailto:contato@descomplic.ai" class="hover:text-slate-950 transition-colors text-slate-800">Suporte</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="border-t border-slate-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p class="text-slate-600 text-xs font-bold">
-                © 2026 Descomplic.AI - Todos os direitos reservados.
-            </p>
-            <div class="flex gap-4">
-                <span class="px-3 py-1 bg-green-600 text-white text-[10px] font-black rounded-full uppercase">API Online</span>
-                <span class="px-3 py-1 bg-blue-600 text-white text-[10px] font-black rounded-full uppercase">Powered by Gemini</span>
-            </div>
-        </div>
-    </div>
-</footer>
 </body>
 </html>
