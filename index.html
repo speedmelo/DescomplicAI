@@ -11,23 +11,12 @@
 <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            overflow-x: hidden; /* Evita que a tela balance para os lados no celular */
+            overflow-x: hidden;
         }
         
         .glass { 
             background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(10px); 
-        }
-
-        /* Ajuste para telas pequenas */
-        @media (max-width: 640px) {
-            .glass {
-                margin: 0;
-                border-radius: 1.5rem;
-                width: 100%;
-            }
-            h1 { font-size: 1.875rem !important; }
-            .p-8 { padding: 1.5rem !important; } /* Diminui o recuo interno no mobile */
         }
 
         .bg-animate {
@@ -42,21 +31,56 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Efeito de brilho no botão */
-        .btn-glow:hover {
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+        /* AJUSTE PARA DESKTOP FICAR CENTRALIZADO E BONITO */
+        @media (min-width: 768px) {
+            .main-container {
+                min-height: 600px;
+                display: grid;
+                grid-template-columns: 1fr 1.5fr; /* Coluna da direita um pouco maior */
+            }
+        }
+    </style><style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden;
+        }
+        
+        .glass { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+        }
+
+        .bg-animate {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #1e1b4b, #020617);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* AJUSTE PARA DESKTOP FICAR CENTRALIZADO E BONITO */
+        @media (min-width: 768px) {
+            .main-container {
+                min-height: 600px;
+                display: grid;
+                grid-template-columns: 1fr 1.5fr; /* Coluna da direita um pouco maior */
+            }
         }
     </style>
 </head>
 <body class="bg-animate min-h-screen flex items-center justify-center p-2 sm:p-4">
 
-    <div class="max-w-4xl w-full glass rounded-[2rem] shadow-2xl overflow-hidden border border-white/20">
-        <div class="grid md:grid-cols-5 h-full">
+<div class="max-w-6xl w-full glass rounded-[2rem] shadow-2xl overflow-hidden border border-white/20">
+        <div class="main-container flex flex-col md:grid h-full">
             
-            <div class="md:col-span-2 bg-slate-900 p-8 text-white flex flex-col justify-center">
+            <div class="bg-slate-900 p-8 text-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-slate-700">
                 <div class="mb-8">
                     <h1 class="text-3xl font-extrabold mb-2">Descomplic<span class="text-blue-400">AI</span></h1>
-                    <p class="text-slate-400 text-sm">Sua blindagem jurídica com inteligência artificial.</p>
+                    <p class="text-slate-400 text-sm">Contratos, Currículos e Documentos descomplicados em segundos.</p>
                 </div>
 
                 <div class="space-y-6">
@@ -68,41 +92,27 @@
                         </div>
                     </div>
 
-                    <button onclick="enviarParaIA()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all active:scale-95 flex items-center justify-center gap-2">
-                        <span>Analisar Documento</span>
+                    <button onclick="enviarParaIA()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg btn-glow transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <span>Analisar Agora</span>
                     </button>
                 </div>
             </div>
 
-           <div id="loading" class="hidden absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center">
-    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <p class="text-blue-900 font-bold animate-pulse">Descomplicando documento em segundos...</p>
-</div>
+            <div class="p-8 bg-white/50 relative min-h-[400px]">
+                <div id="loading" class="hidden absolute inset-0 bg-white/90 z-10 flex flex-col items-center justify-center rounded-r-[2rem]">
+                    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-blue-900 font-bold animate-pulse">Descomplicando documento em segundos...</p>
+                </div>
 
                 <div id="placeholder" class="h-full flex flex-col items-center justify-center text-slate-400 opacity-50 text-center">
                     <span class="text-6xl mb-4">⚖️</span>
-                    <p>Aguardando documento para análise</p>
+                    <p class="max-w-xs text-lg">Aguardando seu arquivo para iniciar a mágica.</p>
                 </div>
 
-                <div id="resultado" class="hidden space-y-6 animate-in fade-in duration-500">
-                    <div id="cardRisco" class="inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-white shadow-sm"></div>
-                    
-                    <section>
-                        <h3 class="text-slate-900 font-bold text-lg mb-2 flex items-center gap-2"><span class="text-blue-600">■</span> Resumo Executivo</h3>
-                        <p id="resumo" class="text-slate-600 leading-relaxed text-sm bg-white p-4 rounded-xl border border-slate-100"></p>
-                    </section>
-
-                    <section>
-                        <h3 class="text-slate-900 font-bold text-lg mb-2 flex items-center gap-2"><span class="text-red-500">■</span> Pontos de Atenção</h3>
-                        <div id="perigos" class="grid gap-3"></div>
-                    </section>
-
-                    <div class="bg-slate-900 rounded-2xl p-6 text-white shadow-xl">
-                        <p class="text-slate-400 text-xs uppercase mb-1">Veredito Final</p>
-                        <p id="veredito" class="text-xl font-bold italic"></p>
+                <div id="resultado" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     </div>
-                </div>
             </div>
+
         </div>
     </div>
 
