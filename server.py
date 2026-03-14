@@ -67,7 +67,7 @@ async def analyze(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="O arquivo PDF está vazio.")
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=[
                 types.Part.from_bytes(
                     data=pdf_bytes,
