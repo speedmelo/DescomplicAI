@@ -33,7 +33,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Estilização da Scrollbar para ficar elegante */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
@@ -49,7 +48,7 @@
                     <img src="Gemini_Generated_Image_dme552dme552dme5.png" alt="Logo" class="h-10 w-auto mb-6 mx-auto md:mx-0">
                     <h1 class="text-4xl font-extrabold mb-3 tracking-tighter">Descomplic<span class="text-blue-400">.AI</span></h1>
                     <p class="text-slate-400 text-sm leading-relaxed">
-                        Analise riscos contratuais em segundos com IA. 
+                        Analise riscos contratuais em segundos com IA.
                         <span class="block mt-2 font-bold text-blue-400/80">Trabalhista • Civil • Consumidor</span>
                     </p>
                 </div>
@@ -66,7 +65,10 @@
                     <button onclick="enviarParaIA()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 text-lg uppercase tracking-widest">
                         <span>Analisar Agora</span>
                     </button>
-                    <p class="text-[10px] text-slate-500 text-center uppercase tracking-tighter">Uso informativo. Não substitui consulta jurídica.</p>
+
+                    <p class="text-[10px] text-slate-500 text-center uppercase tracking-tighter">
+                        Uso informativo. Não substitui consulta jurídica.
+                    </p>
                 </div>
             </div>
 
@@ -85,10 +87,8 @@
                     <p class="max-w-xs text-sm">Suba seu contrato ao lado para identificar cláusulas abusivas e riscos ocultos.</p>
                 </div>
 
-                <div id="resultado" class="hidden space-y-8 pb-10">
-                    </div>
+                <div id="resultado" class="hidden space-y-8 pb-10"></div>
             </div>
-
         </div>
     </div>
 
@@ -127,7 +127,7 @@
                 </p>
                 <div class="flex gap-3">
                     <span class="px-3 py-1 bg-green-900/30 text-green-400 text-[10px] font-black rounded-full border border-green-500/30">API ONLINE</span>
-                    <span class="px-3 py-1 bg-blue-900/30 text-blue-400 text-[10px] font-black rounded-full border border-blue-500/30">GEMINI 2.0 FLASH</span>
+                    <span class="px-3 py-1 bg-blue-900/30 text-blue-400 text-[10px] font-black rounded-full border border-blue-500/30">GEMINI 2.5 FLASH</span>
                 </div>
             </div>
         </div>
@@ -136,104 +136,137 @@
     <script>
         let dadosUltimaAnalise = null;
 
-        document.getElementById('pdfFile').onchange = function() {
+        document.getElementById('pdfFile').addEventListener('change', function () {
+            const fileName = document.getElementById('fileName');
+
             if (this.files[0]) {
-                const fileName = document.getElementById('fileName');
                 fileName.innerText = "Selecionado: " + this.files[0].name;
                 fileName.classList.remove('text-slate-400');
                 fileName.classList.add('text-blue-400', 'font-bold');
+            } else {
+                fileName.innerText = "Arraste seu PDF ou clique para selecionar";
+                fileName.classList.remove('text-blue-400', 'font-bold');
+                fileName.classList.add('text-slate-400');
             }
-        };
+        });
 
         async function enviarParaIA() {
             const fileInput = document.getElementById('pdfFile');
-            if (!fileInput.files[0]) return alert("Por favor, selecione um arquivo PDF!");
+            const loading = document.getElementById('loading');
+            const placeholder = document.getElementById('placeholder');
+            const resultado = document.getElementById('resultado');
+
+            if (!fileInput.files[0]) {
+                alert("Por favor, selecione um arquivo PDF!");
+                return;
+            }
 
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
-            // UI Feedback
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('placeholder').classList.add('hidden');
-            document.getElementById('resultado').classList.add('hidden');
+            loading.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            resultado.classList.add('hidden');
+            resultado.innerHTML = '';
 
             try {
-                // Rota corrigida para /analyze em inglês conforme o server.py
                 const response = await fetch('https://descomplicai-caw6.onrender.com/analyze', {
                     method: 'POST',
                     body: formData
                 });
-                
-                if (!response.ok) throw new Error("Falha na conexão com o motor.");
+
+                if (!response.ok) {
+                    const erro = await response.json().catch(() => null);
+                    throw new Error(erro?.detail || "Falha na resposta do servidor.");
+                }
 
                 const result = await response.json();
-                
-                if (result.status === "sucesso") {
+
+                if (result.status === "sucesso" && result.dados) {
                     exibirResultado(result.dados);
                 } else {
                     throw new Error("Resposta inesperada do servidor.");
                 }
 
             } catch (error) {
-                console.error(error);
-                alert('O servidor está processando ou acordando. Tente novamente em alguns segundos.');
-                document.getElementById('placeholder').classList.remove('hidden');
+                console.error("Erro detalhado:", error);
+                alert(`Não foi possível analisar o arquivo.\n\nDetalhe: ${error.message}`);
+                placeholder.classList.remove('hidden');
             } finally {
-                document.getElementById('loading').classList.add('hidden');
+                loading.classList.add('hidden');
             }
         }
 
         function exibirResultado(dados) {
-            dadosUltimaAnalise = dados; 
+            dadosUltimaAnalise = dados;
+
             const resultadoDiv = document.getElementById('resultado');
             resultadoDiv.classList.remove('hidden');
-            
-            const coresRisco = { 
-                'Baixo': 'bg-emerald-500', 
-                'Médio': 'bg-amber-500', 
-                'Alto': 'bg-rose-600' 
+
+            const nivelRisco = dados.nivel_risco || "Médio";
+            const resumoCurto = dados.resumo_curto || "Resumo não disponível.";
+            const pontosPerigosos = Array.isArray(dados.pontos_perigosos) ? dados.pontos_perigosos : [];
+            const proximosPassos = Array.isArray(dados.proximos_passos) ? dados.proximos_passos : [];
+            const veredito = dados.veredito || "Sem veredito disponível.";
+
+            const coresRisco = {
+                'Baixo': 'bg-emerald-500',
+                'Médio': 'bg-amber-500',
+                'Alto': 'bg-rose-600'
             };
 
             resultadoDiv.innerHTML = `
                 <div class="flex flex-col gap-6">
                     <div class="flex justify-between items-center">
-                        <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-white ${coresRisco[dados.nivel_risco] || 'bg-slate-500'}">
-                            Risco ${dados.nivel_risco}
+                        <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-white ${coresRisco[nivelRisco] || 'bg-slate-500'}">
+                            Risco ${nivelRisco}
                         </span>
                     </div>
 
                     <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
                         <h3 class="text-slate-900 font-black text-sm uppercase mb-3 tracking-widest">Resumo Executivo</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed font-medium">${dados.resumo_curto}</p>
+                        <p class="text-slate-600 text-sm leading-relaxed font-medium">${resumoCurto}</p>
                     </div>
 
                     <div class="space-y-4">
                         <h3 class="text-slate-900 font-black text-sm uppercase tracking-widest flex items-center gap-2">
                             <span class="text-rose-500">●</span> Cláusulas Críticas
                         </h3>
-                        ${dados.pontos_perigosos.map(p => `
-                            <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                                <p class="text-sm font-bold text-slate-900">${p.clausula}</p>
-                                <p class="text-xs text-slate-500 mt-2 leading-relaxed">${p.explicacao}</p>
-                            </div>
-                        `).join('')}
+                        ${
+                            pontosPerigosos.length > 0
+                            ? pontosPerigosos.map(p => `
+                                <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                                    <p class="text-sm font-bold text-slate-900">${p.clausula || "Item não identificado"}</p>
+                                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">${p.explicacao || "Sem explicação disponível."}</p>
+                                </div>
+                            `).join('')
+                            : `<div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">
+                                <p class="text-sm text-slate-500">Nenhum ponto crítico foi identificado.</p>
+                               </div>`
+                        }
                     </div>
 
                     <div class="space-y-4">
                         <h3 class="text-slate-900 font-black text-sm uppercase tracking-widest flex items-center gap-2">
                             <span class="text-emerald-500">●</span> Plano de Ação
                         </h3>
-                        ${dados.proximos_passos.map(passo => `
-                            <div class="bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
-                                <p class="text-xs font-black text-emerald-800 uppercase mb-1">${passo.quem}</p>
-                                <p class="text-sm text-emerald-700 font-medium">${passo.como}</p>
-                            </div>
-                        `).join('')}
+                        ${
+                            proximosPassos.length > 0
+                            ? proximosPassos.map(passo => `
+                                <div class="bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
+                                    <p class="text-xs font-black text-emerald-800 uppercase mb-1">${passo.quem || "Ação sugerida"}</p>
+                                    <p class="text-sm text-emerald-700 font-medium">${passo.como || "Sem orientação disponível."}</p>
+                                </div>
+                            `).join('')
+                            : `<div class="bg-emerald-50/50 border border-emerald-100 p-4 rounded-2xl">
+                                <p class="text-sm text-emerald-700 font-medium">Nenhum próximo passo foi sugerido.</p>
+                               </div>`
+                        }
                     </div>
 
                     <div class="p-6 bg-blue-600 rounded-3xl text-white shadow-xl shadow-blue-200">
                         <h3 class="font-black text-xs uppercase tracking-widest mb-2 opacity-80">Veredito Final</h3>
-                        <p class="text-sm font-bold italic leading-relaxed">"${dados.veredito}"</p>
+                        <p class="text-sm font-bold italic leading-relaxed">"${veredito}"</p>
                     </div>
 
                     <button onclick="gerarPDF()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all flex items-center justify-center gap-2 uppercase tracking-tighter text-sm">
@@ -243,20 +276,111 @@
             `;
         }
 
-        async function gerarPDF() {
+        function gerarPDF() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
             const d = dadosUltimaAnalise;
-            if(!d) return;
+
+            if (!d) {
+                alert("Nenhuma análise disponível para exportar.");
+                return;
+            }
+
+            const doc = new jsPDF();
+            let y = 20;
 
             doc.setFont("helvetica", "bold");
-            doc.text("Relatório de Análise Descomplic.AI", 20, 20);
+            doc.setFontSize(16);
+            doc.text("Relatório de Análise - Descomplic.AI", 20, y);
+
+            y += 10;
             doc.setFontSize(10);
-            doc.text(`Avaliação de Risco: ${d.nivel_risco}`, 20, 30);
-            
-            const splitResumo = doc.splitTextToSize(d.resumo_curto, 170);
             doc.setFont("helvetica", "normal");
-            doc.text(splitResumo, 20, 45);
+            doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, y);
+
+            y += 8;
+            doc.text(`Nível de risco: ${d.nivel_risco || "Não informado"}`, 20, y);
+
+            y += 12;
+            doc.setFont("helvetica", "bold");
+            doc.text("Resumo Executivo:", 20, y);
+
+            y += 8;
+            doc.setFont("helvetica", "normal");
+            const resumo = doc.splitTextToSize(d.resumo_curto || "Resumo não disponível.", 170);
+            doc.text(resumo, 20, y);
+            y += resumo.length * 6 + 6;
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Pontos Perigosos:", 20, y);
+            y += 8;
+
+            const pontos = Array.isArray(d.pontos_perigosos) ? d.pontos_perigosos : [];
+            if (pontos.length === 0) {
+                doc.setFont("helvetica", "normal");
+                doc.text("Nenhum ponto perigoso identificado.", 20, y);
+                y += 8;
+            } else {
+                pontos.forEach((p, i) => {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    doc.setFont("helvetica", "bold");
+                    doc.text(`${i + 1}. ${p.clausula || "Item"}`, 20, y);
+                    y += 6;
+
+                    doc.setFont("helvetica", "normal");
+                    const explicacao = doc.splitTextToSize(p.explicacao || "Sem explicação disponível.", 165);
+                    doc.text(explicacao, 25, y);
+                    y += explicacao.length * 6 + 4;
+                });
+            }
+
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Próximos Passos:", 20, y);
+            y += 8;
+
+            const passos = Array.isArray(d.proximos_passos) ? d.proximos_passos : [];
+            if (passos.length === 0) {
+                doc.setFont("helvetica", "normal");
+                doc.text("Nenhum próximo passo sugerido.", 20, y);
+                y += 8;
+            } else {
+                passos.forEach((passo, i) => {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    doc.setFont("helvetica", "bold");
+                    doc.text(`${i + 1}. ${passo.quem || "Sugestão"}`, 20, y);
+                    y += 6;
+
+                    doc.setFont("helvetica", "normal");
+                    const como = doc.splitTextToSize(passo.como || "Sem orientação disponível.", 165);
+                    doc.text(como, 25, y);
+                    y += como.length * 6 + 4;
+                });
+            }
+
+            if (y > 260) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Veredito Final:", 20, y);
+            y += 8;
+
+            doc.setFont("helvetica", "normal");
+            const veredito = doc.splitTextToSize(d.veredito || "Sem veredito disponível.", 170);
+            doc.text(veredito, 20, y);
 
             doc.save("Analise_DescomplicAI.pdf");
         }
