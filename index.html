@@ -1,553 +1,678 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Descomplic.AI | Proteção Jurídica</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descomplic.AI | Proteção Jurídica - Melo Strategic A.I</title>
+    <meta name="description" content="Analise contratos com IA e identifique cláusulas abusivas, riscos ocultos e próximos passos com clareza jurídica.">
+    <link rel="icon" type="image/png" href="Gemini_Generated_Image_yi67bwyi67bwyi67.png">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="Gemini_Generated_Image_yi67bwyi67bwyi67.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <style>
+        body {
+            background-color: #020617;
+            font-family: 'Inter', sans-serif;
+            background-image:
+                radial-gradient(circle at top right, rgba(16,185,129,0.10), transparent 30%),
+                radial-gradient(circle at bottom left, rgba(15,23,42,1), transparent 35%);
+            overflow-x: hidden;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-      background:
-        radial-gradient(circle at top right, rgba(59,130,246,0.18), transparent 28%),
-        radial-gradient(circle at bottom left, rgba(16,185,129,0.10), transparent 25%),
-        linear-gradient(135deg, #020617 0%, #0f172a 45%, #111827 100%);
-    }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(16, 185, 129, 0.10);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+        }
 
-    .glass-shell {
-      background: rgba(255, 255, 255, 0.97);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
+        .glass-soft {
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.08);
+        }
 
-    .hero-left {
-      background:
-        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 32%),
-        linear-gradient(180deg, #020617 0%, #0f172a 55%, #111827 100%);
-    }
+        .btn-premium {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: all 0.25s ease;
+        }
 
-    .upload-zone {
-      transition: all 0.25s ease;
-    }
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.25);
+        }
 
-    .upload-zone:hover {
-      transform: translateY(-2px);
-      border-color: rgba(96, 165, 250, 0.85);
-      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.35);
-    }
+        .btn-premium:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-    .result-card {
-      transition: all 0.25s ease;
-    }
+        .border-glow {
+            box-shadow: 0 0 0 1px rgba(16,185,129,0.12), 0 0 30px rgba(16,185,129,0.08);
+        }
 
-    .result-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
-    }
+        .dropzone-hover {
+            border-color: rgba(16, 185, 129, 0.55) !important;
+            background: rgba(16, 185, 129, 0.07);
+        }
 
-    .fade-up {
-      animation: fadeUp 0.45s ease;
-    }
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
 
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    ::-webkit-scrollbar-track {
-      background: #e5e7eb;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-    ::-webkit-scrollbar-thumb {
-      background: #3b82f6;
-      border-radius: 999px;
-    }
-  </style>
+        .loading-bar {
+            background: linear-gradient(90deg, rgba(16,185,129,0.15), rgba(16,185,129,0.75), rgba(16,185,129,0.15));
+            background-size: 200% 100%;
+            animation: loadingMove 1.6s linear infinite;
+        }
+
+        @keyframes loadingMove {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .hero-grid::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+            pointer-events: none;
+        }
+
+        .brand-nav-icon {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.95);
+            padding: 6px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+        }
+
+        .upload-priority {
+            position: relative;
+            margin-top: -1rem;
+            z-index: 20;
+        }
+
+        .upload-card-strong {
+            border: 1px solid rgba(16, 185, 129, 0.20);
+            box-shadow:
+                0 0 0 1px rgba(16,185,129,0.10),
+                0 18px 40px rgba(0,0,0,0.28),
+                0 0 40px rgba(16,185,129,0.06);
+        }
+
+        .upload-icon-wrap {
+            box-shadow: 0 0 0 1px rgba(16,185,129,0.15), 0 16px 30px rgba(16,185,129,0.10);
+        }
+
+        .result-highlight {
+            background: linear-gradient(180deg, rgba(16,185,129,0.08), rgba(16,185,129,0.02));
+            border: 1px solid rgba(16,185,129,0.12);
+        }
+
+        .legal-link {
+            transition: all 0.2s ease;
+        }
+
+        .legal-link:hover {
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16,185,129,0.45);
+            border-radius: 999px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15,23,42,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .upload-priority {
+                margin-top: -0.35rem;
+            }
+        }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col items-center text-slate-900">
+<body class="text-slate-300 min-h-screen pb-20">
 
-  <main class="w-full px-0 md:px-6 py-0 md:py-8">
-    <div class="max-w-7xl mx-auto glass-shell rounded-none md:rounded-[2.5rem] shadow-2xl overflow-hidden border-x border-b md:border border-white/20">
-      <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[760px]">
-
-        <!-- LADO ESQUERDO -->
-        <section class="hero-left text-white p-8 md:p-12 xl:p-16 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800">
-          <div>
-            <div class="mb-10 text-center lg:text-left">
-              <img src="Gemini_Generated_Image_dme552dme552dme5.png" alt="Logo Descomplic.AI" class="h-11 w-auto mx-auto lg:mx-0 mb-6">
-
-              <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 text-blue-300 text-[11px] font-extrabold uppercase tracking-[0.25em] mb-6">
-                Proteção Jurídica com IA
-              </span>
-
-              <h1 class="text-4xl md:text-5xl font-black tracking-tighter leading-none mb-4">
-                Descomplic<span class="text-blue-400">.AI</span>
-              </h1>
-
-              <p class="text-slate-300 text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Analise riscos contratuais em segundos com uma experiência mais clara, moderna e objetiva.
-              </p>
-
-              <p class="text-blue-300/90 text-sm font-bold mt-4 tracking-wide">
-                Trabalhista • Civil • Consumidor
-              </p>
+    <nav class="max-w-7xl mx-auto px-6 py-6 md:px-8 md:py-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="flex items-center gap-4">
+            <img src="Gemini_Generated_Image_yi67bwyi67bwyi67.png" alt="Logo Descomplic.AI" class="brand-nav-icon">
+            <div>
+                <h2 class="text-white font-black text-2xl tracking-tighter">DESCOMPLIC.<span class="text-emerald-500">AI</span></h2>
+                <p class="text-[10px] text-slate-500 uppercase tracking-[0.35em] font-bold">Proteção Jurídica</p>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-              <div class="rounded-2xl border border-slate-700 bg-slate-800/50 p-4">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400 font-bold mb-2">Velocidade</p>
-                <p class="text-sm font-extrabold text-white">Análise em segundos</p>
-              </div>
+        <div class="text-left md:text-right">
+            <p class="text-[9px] text-slate-600 uppercase tracking-[0.35em]">Melo Strategic A.I</p>
+            <p class="text-white text-[11px] font-semibold">Powered by Unified Intelligence Systems</p>
+        </div>
+    </nav>
 
-              <div class="rounded-2xl border border-slate-700 bg-slate-800/50 p-4">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400 font-bold mb-2">Segurança</p>
-                <p class="text-sm font-extrabold text-white">Sem retenção de dados</p>
-              </div>
-
-              <div class="rounded-2xl border border-slate-700 bg-slate-800/50 p-4">
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-400 font-bold mb-2">Cobertura</p>
-                <p class="text-sm font-extrabold text-white">Cláusulas críticas e riscos</p>
-              </div>
-            </div>
-
-            <div class="space-y-6">
-              <div class="upload-zone group relative border-2 border-dashed border-slate-700 rounded-[2rem] p-8 md:p-10 bg-slate-800/50">
-                <input type="file" id="pdfFile" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-
-                <div class="text-center">
-                  <div class="w-20 h-20 rounded-full bg-slate-900/80 border border-slate-700 flex items-center justify-center mx-auto mb-5">
-                    <span class="text-4xl">📄</span>
-                  </div>
-
-                  <h3 class="text-lg font-black tracking-tight mb-2">Envie seu contrato em PDF</h3>
-                  <p id="fileName" class="text-sm text-slate-400 max-w-sm mx-auto leading-relaxed">
-                    Arraste seu arquivo aqui ou clique para selecionar
-                  </p>
+    <main class="max-w-6xl mx-auto px-6 relative">
+        <section class="hero-grid relative text-center mt-6 md:mt-10 mb-4 md:mb-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-soft text-emerald-400 text-[11px] uppercase tracking-[0.25em] font-bold mb-5 border-glow">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Proteção contratual assistida por IA
                 </div>
-              </div>
 
-              <button onclick="enviarParaIA()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 text-sm md:text-base uppercase tracking-[0.2em]">
-                <span>⚖️</span>
-                <span>Analisar Agora</span>
-              </button>
+                <h1 class="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-5">
+                    Analise contratos com IA e
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-600">
+                        identifique riscos com clareza.
+                    </span>
+                </h1>
 
-              <p class="text-[11px] text-slate-500 text-center uppercase tracking-[0.18em] font-bold">
-                Uso informativo. Não substitui consulta jurídica profissional.
-              </p>
+                <p class="text-slate-400 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed">
+                    Resumo executivo, cláusulas críticas, plano de ação e veredito final para contratos trabalhistas, civis e de consumo.
+                </p>
             </div>
-          </div>
-
-          <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="rounded-2xl bg-slate-900/60 border border-slate-800 p-5">
-              <p class="text-blue-300 text-xs uppercase tracking-[0.22em] font-black mb-2">O que a IA identifica</p>
-              <p class="text-slate-300 text-sm leading-relaxed">
-                Cláusulas abusivas, pontos de atenção, nível de risco e próximos passos sugeridos.
-              </p>
-            </div>
-
-            <div class="rounded-2xl bg-slate-900/60 border border-slate-800 p-5">
-              <p class="text-emerald-300 text-xs uppercase tracking-[0.22em] font-black mb-2">Ideal para</p>
-              <p class="text-slate-300 text-sm leading-relaxed">
-                Locação, compra e venda, prestação de serviço, consumo e acordos em geral.
-              </p>
-            </div>
-          </div>
         </section>
 
-        <!-- LADO DIREITO -->
-        <section class="bg-white relative min-h-[560px] p-6 md:p-10 xl:p-12 overflow-y-auto">
-          <div class="mb-8">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-[11px] font-black uppercase tracking-[0.2em] mb-4">
-              Resultado da análise
-            </span>
-            <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900">
-              Diagnóstico jurídico inteligente
-            </h2>
-            <p class="text-slate-500 text-sm md:text-base mt-2 max-w-2xl">
-              Veja o risco geral do documento, pontos críticos identificados, plano de ação recomendado e o veredito final.
-            </p>
-          </div>
+        <section id="uploadCard" class="upload-priority glass-card upload-card-strong rounded-3xl p-8 md:p-10 border-2 border-dashed border-slate-800 hover:border-emerald-500/50 transition-all relative overflow-hidden group mb-10">
+            <input type="file" id="pdfFile" class="hidden" accept="application/pdf">
 
-          <div id="loading" class="hidden absolute inset-0 bg-white/95 z-20 flex flex-col items-center justify-center p-8 text-center">
-            <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-6"></div>
-            <p class="text-slate-900 font-black text-xl animate-pulse uppercase tracking-tight">
-              Descomplicando Documento...
-            </p>
-            <p class="text-slate-500 text-sm mt-2">
-              Nossa IA está lendo as entrelinhas para você.
-            </p>
-          </div>
+            <label for="pdfFile" class="cursor-pointer block text-center">
+                <div class="mb-6 inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-emerald-500/12 text-emerald-500 group-hover:scale-110 transition-transform duration-500 upload-icon-wrap">
+                    <i class="fas fa-file-contract text-4xl"></i>
+                </div>
 
-          <div id="placeholder" class="h-[420px] flex flex-col items-center justify-center text-center border border-dashed border-slate-200 rounded-[2rem] bg-slate-50/70">
-            <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-100">
-              <span class="text-5xl">⚖️</span>
+                <p class="text-emerald-400 text-[11px] font-black uppercase tracking-[0.32em] mb-3">
+                    Ação principal
+                </p>
+
+                <h3 class="text-2xl md:text-3xl font-black text-white mb-3">
+                    Clique para importar o contrato em PDF
+                </h3>
+
+                <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+                    Envie o documento e receba uma leitura objetiva com riscos, cláusulas críticas e próximos passos recomendados.
+                </p>
+
+                <div class="mt-6 flex flex-wrap justify-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500">
+                    <span class="glass-soft px-4 py-2 rounded-full">Leitura imediata</span>
+                    <span class="glass-soft px-4 py-2 rounded-full">Análise jurídica</span>
+                    <span class="glass-soft px-4 py-2 rounded-full">Decisão mais segura</span>
+                </div>
+            </label>
+
+            <div id="fileInfo" class="mt-8 hidden fade-in text-center">
+                <div class="inline-flex flex-wrap items-center gap-2 px-4 py-3 rounded-2xl bg-emerald-500/15 text-emerald-400 text-xs border border-emerald-500/30">
+                    <i class="fas fa-circle-check"></i>
+                    <span id="fileName">arquivo.pdf</span>
+                </div>
+
+                <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="enviarParaIA()" id="btnAnalisar" class="btn-premium px-10 py-4 rounded-xl font-black text-white text-sm tracking-[0.18em] uppercase">
+                        Iniciar análise jurídica
+                    </button>
+
+                    <button onclick="limparArquivo()" class="px-8 py-4 rounded-xl font-bold text-slate-300 border border-slate-700 hover:border-slate-500 hover:text-white transition-all text-sm uppercase tracking-[0.15em]">
+                        Limpar seleção
+                    </button>
+                </div>
+
+                <p class="text-[10px] text-slate-500 text-center uppercase tracking-[0.18em] mt-5">
+                    Uso informativo. Não substitui consulta jurídica.
+                </p>
             </div>
-            <h3 class="text-slate-900 font-black text-2xl tracking-tight mb-3">
-              Pronto para começar?
-            </h3>
-            <p class="max-w-md text-sm md:text-base text-slate-500 leading-relaxed px-6">
-              Envie seu contrato no painel ao lado para identificar cláusulas abusivas, riscos ocultos e recomendações práticas.
-            </p>
-          </div>
-
-          <div id="resultado" class="hidden space-y-6 pb-6 fade-up"></div>
         </section>
-      </div>
-    </div>
-  </main>
 
-  <footer class="w-full bg-slate-950 text-white py-16 px-6 mt-0 md:mt-8 border-t border-slate-800">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-        <div class="space-y-4 text-center md:text-left">
-          <div class="flex items-center gap-3 justify-center md:justify-start mb-6">
-            <img src="Gemini_Generated_Image_yi67bwyi67bwyi67.png" alt="Logo Descomplic.AI" class="h-10 w-auto">
-            <span class="text-2xl font-extrabold tracking-tighter">
-              Descomplic<span class="text-blue-400">.AI</span>
-            </span>
-          </div>
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            <div class="glass-card rounded-2xl p-5 fade-in-up">
+                <p class="text-emerald-400 text-xs font-bold uppercase tracking-[0.2em] mb-3">Nível de risco</p>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Visão rápida para entender a gravidade e a sensibilidade do contrato analisado.
+                </p>
+            </div>
 
-          <p class="text-slate-400 text-sm leading-relaxed max-w-sm mx-auto md:mx-0">
-            Inteligência Artificial brasileira focada em democratizar a compreensão de contratos e riscos jurídicos.
-          </p>
+            <div class="glass-card rounded-2xl p-5 fade-in-up" style="animation-delay: 0.08s;">
+                <p class="text-emerald-400 text-xs font-bold uppercase tracking-[0.2em] mb-3">Cláusulas críticas</p>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Identificação objetiva de pontos abusivos, sensíveis ou juridicamente perigosos.
+                </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 fade-in-up" style="animation-delay: 0.16s;">
+                <p class="text-emerald-400 text-xs font-bold uppercase tracking-[0.2em] mb-3">Plano de ação</p>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Orientação prática sobre o que observar, questionar ou buscar antes de assinar.
+                </p>
+            </div>
+        </section>
+
+        <section id="loading" class="hidden mt-12 glass-card rounded-3xl p-8 md:p-10 fade-in">
+            <div class="max-w-2xl mx-auto text-center">
+                <div class="flex justify-center gap-2 mb-6">
+                    <div class="w-2 h-9 bg-emerald-500 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-9 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <div class="w-2 h-9 bg-emerald-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                </div>
+
+                <p class="text-emerald-400 font-black text-xs tracking-[0.35em] uppercase mb-6">
+                    Processamento jurídico em andamento
+                </p>
+
+                <p id="loadingMessage" class="text-white text-lg font-semibold mb-4">
+                    Lendo o contrato e mapeando riscos...
+                </p>
+
+                <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div class="loading-bar h-full w-full rounded-full"></div>
+                </div>
+
+                <p class="text-slate-500 text-sm mt-4">
+                    Nossa IA está analisando cláusulas, obrigações, riscos e possíveis abusos.
+                </p>
+            </div>
+        </section>
+
+        <section id="placeholder" class="mt-12">
+            <div class="glass-card rounded-3xl p-10 text-center">
+                <div class="w-24 h-24 mx-auto bg-emerald-500/10 rounded-full flex items-center justify-center mb-6">
+                    <span class="text-5xl">⚖️</span>
+                </div>
+                <h2 class="text-white font-black text-2xl mb-3">Pronto para começar?</h2>
+                <p class="text-slate-400 max-w-md mx-auto text-sm md:text-base">
+                    Suba seu contrato para identificar cláusulas abusivas, riscos ocultos e caminhos mais seguros antes de assinar.
+                </p>
+            </div>
+        </section>
+
+        <section id="resultado" class="hidden mt-12 space-y-8 pb-10"></section>
+    </main>
+
+    <footer class="mt-20 py-12 text-center px-6">
+        <div class="opacity-30 flex items-center justify-center gap-6 mb-4">
+            <div class="h-[1px] w-12 bg-slate-500"></div>
+            <span class="text-[10px] tracking-[0.5em] uppercase text-slate-400">Melo Strategic A.I</span>
+            <div class="h-[1px] w-12 bg-slate-500"></div>
         </div>
 
-        <div class="space-y-4 text-center md:text-left">
-          <h4 class="text-blue-400 font-black text-xs uppercase tracking-[0.25em]">Segurança</h4>
-          <ul class="text-slate-300 text-sm space-y-3 font-bold">
-            <li class="flex items-center justify-center md:justify-start gap-2">🛡️ Processamento Criptografado</li>
-            <li class="flex items-center justify-center md:justify-start gap-2">🔒 Sem Retenção de Dados</li>
-            <li class="flex items-center justify-center md:justify-start gap-2">⚡ API de Alta Velocidade</li>
-          </ul>
+        <div class="flex flex-wrap justify-center gap-4 md:gap-6 mb-5 text-[11px] uppercase tracking-[0.18em] font-bold">
+            <a href="termos.html" class="legal-link text-slate-500">Termos de Uso</a>
+            <a href="privacidade.html" class="legal-link text-slate-500">Política de Privacidade</a>
+            <a href="mailto:contato@descomplic.ai" class="legal-link text-slate-500">Suporte</a>
         </div>
 
-        <div class="space-y-4 text-center md:text-left">
-          <h4 class="text-blue-400 font-black text-xs uppercase tracking-[0.25em]">Institucional</h4>
-          <div class="flex flex-col gap-3 text-sm font-bold">
-            <a href="termos.html" class="text-slate-300 hover:text-white transition-colors">Termos de Uso</a>
-            <a href="privacidade.html" class="text-slate-300 hover:text-white transition-colors">Política de Privacidade</a>
-            <a href="mailto:contato@descomplic.ai" class="text-blue-400 hover:underline">📩 Suporte: contato@descomplic.ai</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.22em] text-center md:text-left">
-          © 2026 Descomplic.AI - Todos os direitos reservados.
+        <p class="text-slate-600 text-[10px] uppercase tracking-[0.2em]">
+            © 2026 Descomplic.AI | Proteção Jurídica — Todos os direitos reservados
         </p>
+    </footer>
 
-        <div class="flex gap-3 flex-wrap justify-center">
-          <span class="px-3 py-1 bg-green-900/30 text-green-400 text-[10px] font-black rounded-full border border-green-500/30">API ONLINE</span>
-          <span class="px-3 py-1 bg-blue-900/30 text-blue-400 text-[10px] font-black rounded-full border border-blue-500/30">GEMINI 2.5 FLASH</span>
-        </div>
-      </div>
-    </div>
-  </footer>
+    <script>
+        let dadosUltimaAnalise = null;
 
-  <script>
-    let dadosUltimaAnalise = null;
+        const pdfFile = document.getElementById('pdfFile');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const uploadCard = document.getElementById('uploadCard');
+        const loading = document.getElementById('loading');
+        const placeholder = document.getElementById('placeholder');
+        const resultado = document.getElementById('resultado');
+        const btnAnalisar = document.getElementById('btnAnalisar');
+        const loadingMessage = document.getElementById('loadingMessage');
 
-    const pdfFile = document.getElementById('pdfFile');
-    const fileName = document.getElementById('fileName');
-    const loading = document.getElementById('loading');
-    const placeholder = document.getElementById('placeholder');
-    const resultado = document.getElementById('resultado');
+        const loadingMessages = [
+            "Lendo o contrato e mapeando riscos...",
+            "Identificando cláusulas críticas...",
+            "Montando o plano de ação jurídico..."
+        ];
 
-    pdfFile.addEventListener('change', function () {
-      if (this.files[0]) {
-        fileName.innerText = "Selecionado: " + this.files[0].name;
-        fileName.classList.remove('text-slate-400');
-        fileName.classList.add('text-blue-300', 'font-bold');
-      } else {
-        fileName.innerText = "Arraste seu arquivo aqui ou clique para selecionar";
-        fileName.classList.remove('text-blue-300', 'font-bold');
-        fileName.classList.add('text-slate-400');
-      }
-    });
+        let loadingInterval = null;
 
-    async function enviarParaIA() {
-      const fileInput = document.getElementById('pdfFile');
-
-      if (!fileInput.files[0]) {
-        alert("Por favor, selecione um arquivo PDF!");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('file', fileInput.files[0]);
-
-      loading.classList.remove('hidden');
-      placeholder.classList.add('hidden');
-      resultado.classList.add('hidden');
-      resultado.innerHTML = '';
-
-      try {
-        const response = await fetch('https://descomplicai-caw6.onrender.com/analyze', {
-          method: 'POST',
-          body: formData
+        pdfFile.addEventListener('change', function () {
+            atualizarArquivoSelecionado(this.files);
         });
 
-        if (!response.ok) {
-          const erro = await response.json().catch(() => null);
-          throw new Error(erro?.detail || "Falha na resposta do servidor.");
+        function atualizarArquivoSelecionado(files) {
+            if (!files || !files.length) {
+                fileInfo.classList.add('hidden');
+                fileName.innerText = "arquivo.pdf";
+                return;
+            }
+
+            const file = files[0];
+            fileName.innerText = `${file.name} • ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+            fileInfo.classList.remove('hidden');
         }
 
-        const result = await response.json();
+        uploadCard.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadCard.classList.add('dropzone-hover');
+        });
 
-        if (result.status === "sucesso" && result.dados) {
-          exibirResultado(result.dados);
-        } else {
-          throw new Error("Resposta inesperada do servidor.");
+        uploadCard.addEventListener('dragleave', () => {
+            uploadCard.classList.remove('dropzone-hover');
+        });
+
+        uploadCard.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadCard.classList.remove('dropzone-hover');
+
+            const droppedFiles = Array.from(e.dataTransfer.files);
+            if (!droppedFiles.length) return;
+
+            const file = droppedFiles[0];
+            if (file.type !== 'application/pdf') {
+                alert("Envie apenas arquivos PDF.");
+                return;
+            }
+
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            pdfFile.files = dt.files;
+            atualizarArquivoSelecionado(pdfFile.files);
+        });
+
+        function limparArquivo() {
+            pdfFile.value = "";
+            fileInfo.classList.add('hidden');
+            fileName.innerText = "arquivo.pdf";
+            resultado.classList.add('hidden');
+            resultado.innerHTML = "";
+            placeholder.classList.remove('hidden');
         }
 
-      } catch (error) {
-        console.error("Erro detalhado:", error);
-        alert(`Não foi possível analisar o arquivo.\n\nDetalhe: ${error.message}`);
-        placeholder.classList.remove('hidden');
-      } finally {
-        loading.classList.add('hidden');
-      }
-    }
+        function iniciarLoadingInteligente() {
+            let index = 0;
+            loadingMessage.innerText = loadingMessages[index];
 
-    function exibirResultado(dados) {
-      dadosUltimaAnalise = dados;
+            loadingInterval = setInterval(() => {
+                index = (index + 1) % loadingMessages.length;
+                loadingMessage.innerText = loadingMessages[index];
+            }, 1800);
+        }
 
-      const resultadoDiv = document.getElementById('resultado');
-      resultadoDiv.classList.remove('hidden');
-
-      const nivelRisco = dados.nivel_risco || "Médio";
-      const resumoCurto = dados.resumo_curto || "Resumo não disponível.";
-      const pontosPerigosos = Array.isArray(dados.pontos_perigosos) ? dados.pontos_perigosos : [];
-      const proximosPassos = Array.isArray(dados.proximos_passos) ? dados.proximos_passos : [];
-      const veredito = dados.veredito || "Sem veredito disponível.";
-
-      const coresRisco = {
-        'Baixo': 'bg-emerald-500',
-        'Médio': 'bg-amber-500',
-        'Alto': 'bg-rose-600'
-      };
-
-      resultadoDiv.innerHTML = `
-        <div class="flex flex-col gap-6 fade-up">
-
-          <div class="flex flex-wrap justify-between items-center gap-3">
-            <span class="px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-[0.22em] text-white ${coresRisco[nivelRisco] || 'bg-slate-500'}">
-              Risco ${nivelRisco}
-            </span>
-
-            <span class="px-4 py-2 rounded-full text-[11px] font-black uppercase tracking-[0.18em] bg-slate-100 text-slate-700">
-              Relatório Gerado com IA
-            </span>
-          </div>
-
-          <div class="result-card bg-slate-50 p-6 md:p-7 rounded-[2rem] border border-slate-100">
-            <h3 class="text-slate-900 font-black text-sm uppercase mb-3 tracking-[0.2em]">
-              Resumo Executivo
-            </h3>
-            <p class="text-slate-600 text-sm md:text-[15px] leading-relaxed font-medium">
-              ${resumoCurto}
-            </p>
-          </div>
-
-          <div class="space-y-4">
-            <h3 class="text-slate-900 font-black text-sm uppercase tracking-[0.2em] flex items-center gap-2">
-              <span class="text-rose-500">●</span> Cláusulas Críticas
-            </h3>
-
-            ${
-              pontosPerigosos.length > 0
-                ? pontosPerigosos.map(p => `
-                  <div class="result-card bg-white border border-slate-100 p-5 rounded-[1.5rem] shadow-sm">
-                    <p class="text-sm md:text-base font-extrabold text-slate-900">
-                      ${p.clausula || "Item não identificado"}
-                    </p>
-                    <p class="text-xs md:text-sm text-slate-500 mt-3 leading-relaxed">
-                      ${p.explicacao || "Sem explicação disponível."}
-                    </p>
-                  </div>
-                `).join('')
-                : `
-                  <div class="result-card bg-white border border-slate-100 p-5 rounded-[1.5rem] shadow-sm">
-                    <p class="text-sm text-slate-500">
-                      Nenhum ponto crítico foi identificado.
-                    </p>
-                  </div>
-                `
+        function pararLoadingInteligente() {
+            if (loadingInterval) {
+                clearInterval(loadingInterval);
+                loadingInterval = null;
             }
-          </div>
+        }
 
-          <div class="space-y-4">
-            <h3 class="text-slate-900 font-black text-sm uppercase tracking-[0.2em] flex items-center gap-2">
-              <span class="text-emerald-500">●</span> Plano de Ação
-            </h3>
-
-            ${
-              proximosPassos.length > 0
-                ? proximosPassos.map(passo => `
-                  <div class="result-card bg-emerald-50/70 border border-emerald-100 p-5 rounded-[1.5rem]">
-                    <p class="text-xs font-black text-emerald-800 uppercase mb-2 tracking-[0.16em]">
-                      ${passo.quem || "Ação sugerida"}
-                    </p>
-                    <p class="text-sm text-emerald-700 font-medium leading-relaxed">
-                      ${passo.como || "Sem orientação disponível."}
-                    </p>
-                  </div>
-                `).join('')
-                : `
-                  <div class="result-card bg-emerald-50/70 border border-emerald-100 p-5 rounded-[1.5rem]">
-                    <p class="text-sm text-emerald-700 font-medium">
-                      Nenhum próximo passo foi sugerido.
-                    </p>
-                  </div>
-                `
+        async function enviarParaIA() {
+            if (!pdfFile.files[0]) {
+                alert("Por favor, selecione um arquivo PDF!");
+                return;
             }
-          </div>
 
-          <div class="result-card p-6 md:p-7 bg-blue-600 rounded-[2rem] text-white shadow-xl shadow-blue-200/40">
-            <h3 class="font-black text-xs uppercase tracking-[0.2em] mb-3 opacity-80">
-              Veredito Final
-            </h3>
-            <p class="text-sm md:text-base font-bold italic leading-relaxed">
-              "${veredito}"
-            </p>
-          </div>
+            const file = pdfFile.files[0];
+            if (file.type !== "application/pdf") {
+                alert("Formato inválido. Envie um PDF.");
+                return;
+            }
 
-          <button onclick="gerarPDF()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all flex items-center justify-center gap-2 uppercase tracking-[0.16em] text-sm active:scale-[0.99]">
-            <span>📥</span>
-            <span>Baixar Relatório Jurídico</span>
-          </button>
-        </div>
-      `;
-    }
+            const formData = new FormData();
+            formData.append('file', file);
 
-    function gerarPDF() {
-      const { jsPDF } = window.jspdf;
-      const d = dadosUltimaAnalise;
+            loading.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            resultado.classList.add('hidden');
+            resultado.innerHTML = '';
+            btnAnalisar.disabled = true;
+            iniciarLoadingInteligente();
 
-      if (!d) {
-        alert("Nenhuma análise disponível para exportar.");
-        return;
-      }
+            try {
+                const response = await fetch('https://descomplicai-caw6.onrender.com/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
 
-      const doc = new jsPDF();
-      let y = 20;
+                if (!response.ok) {
+                    const erro = await response.json().catch(() => null);
+                    throw new Error(erro?.detail || "Falha na resposta do servidor.");
+                }
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("Relatório de Análise - Descomplic.AI", 20, y);
+                const result = await response.json();
 
-      y += 10;
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, y);
+                if (result.status === "sucesso" && result.dados) {
+                    exibirResultado(result.dados);
+                } else {
+                    throw new Error("Resposta inesperada do servidor.");
+                }
 
-      y += 8;
-      doc.text(`Nível de risco: ${d.nivel_risco || "Não informado"}`, 20, y);
+            } catch (error) {
+                console.error("Erro detalhado:", error);
+                alert(`Não foi possível analisar o arquivo.\n\nDetalhe: ${error.message}`);
+                placeholder.classList.remove('hidden');
+            } finally {
+                pararLoadingInteligente();
+                loading.classList.add('hidden');
+                btnAnalisar.disabled = false;
+            }
+        }
 
-      y += 12;
-      doc.setFont("helvetica", "bold");
-      doc.text("Resumo Executivo:", 20, y);
+        function exibirResultado(dados) {
+            dadosUltimaAnalise = dados;
+            resultado.classList.remove('hidden');
 
-      y += 8;
-      doc.setFont("helvetica", "normal");
-      const resumo = doc.splitTextToSize(d.resumo_curto || "Resumo não disponível.", 170);
-      doc.text(resumo, 20, y);
-      y += resumo.length * 6 + 6;
+            const nivelRisco = dados.nivel_risco || "Médio";
+            const resumoCurto = dados.resumo_curto || "Resumo não disponível.";
+            const pontosPerigosos = Array.isArray(dados.pontos_perigosos) ? dados.pontos_perigosos : [];
+            const proximosPassos = Array.isArray(dados.proximos_passos) ? dados.proximos_passos : [];
+            const veredito = dados.veredito || "Sem veredito disponível.";
 
-      doc.setFont("helvetica", "bold");
-      doc.text("Pontos Perigosos:", 20, y);
-      y += 8;
+            const classesRisco = {
+                'Baixo': 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10',
+                'Médio': 'text-amber-400 border-amber-500/20 bg-amber-500/10',
+                'Alto': 'text-rose-400 border-rose-500/20 bg-rose-500/10'
+            };
 
-      const pontos = Array.isArray(d.pontos_perigosos) ? d.pontos_perigosos : [];
-      if (pontos.length === 0) {
-        doc.setFont("helvetica", "normal");
-        doc.text("Nenhum ponto perigoso identificado.", 20, y);
-        y += 8;
-      } else {
-        pontos.forEach((p, i) => {
-          if (y > 270) {
-            doc.addPage();
-            y = 20;
-          }
+            resultado.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-card p-8 rounded-3xl text-center fade-in-up">
+                        <p class="text-xs uppercase tracking-[0.25em] text-slate-500 mb-4 font-bold">Nível de risco</p>
+                        <div class="inline-flex px-5 py-3 rounded-2xl text-sm font-black uppercase tracking-[0.18em] border ${classesRisco[nivelRisco] || 'text-slate-300 border-slate-700 bg-slate-800'}">
+                            ${nivelRisco}
+                        </div>
+                    </div>
 
-          doc.setFont("helvetica", "bold");
-          doc.text(`${i + 1}. ${p.clausula || "Item"}`, 20, y);
-          y += 6;
+                    <div class="glass-card result-highlight p-8 rounded-3xl md:col-span-2 flex flex-col justify-center fade-in-up" style="animation-delay: 0.08s;">
+                        <p class="text-xs uppercase tracking-[0.25em] text-slate-500 mb-3 font-bold">Veredito final</p>
+                        <div class="text-2xl md:text-3xl font-semibold text-emerald-100 italic leading-snug">${veredito}</div>
+                    </div>
+                </div>
 
-          doc.setFont("helvetica", "normal");
-          const explicacao = doc.splitTextToSize(p.explicacao || "Sem explicação disponível.", 165);
-          doc.text(explicacao, 25, y);
-          y += explicacao.length * 6 + 4;
-        });
-      }
+                <div class="glass-card p-8 rounded-3xl fade-in-up" style="animation-delay: 0.12s;">
+                    <div class="flex items-center gap-3 mb-5">
+                        <i class="fas fa-scale-balanced text-emerald-500 text-xl"></i>
+                        <h4 class="text-white font-black tracking-[0.15em] text-sm uppercase">Resumo executivo</h4>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed text-base md:text-lg font-light">${resumoCurto}</p>
+                </div>
 
-      if (y > 250) {
-        doc.addPage();
-        y = 20;
-      }
+                <div class="glass-card p-8 rounded-3xl fade-in-up" style="animation-delay: 0.16s;">
+                    <h4 class="text-xs font-bold text-rose-400 uppercase tracking-[0.25em] mb-5">Cláusulas críticas</h4>
+                    <div class="space-y-3">
+                        ${
+                            pontosPerigosos.length > 0
+                            ? pontosPerigosos.map(p => `
+                                <div class="glass-soft rounded-2xl p-4 border border-slate-800">
+                                    <p class="text-white text-sm font-semibold mb-2">${p.clausula || "Item não identificado"}</p>
+                                    <p class="text-slate-400 text-sm leading-relaxed">${p.explicacao || "Sem explicação disponível."}</p>
+                                </div>
+                            `).join('')
+                            : `
+                                <div class="glass-soft rounded-2xl p-4 border border-slate-800">
+                                    <p class="text-slate-400 text-sm">Nenhum ponto crítico foi identificado.</p>
+                                </div>
+                            `
+                        }
+                    </div>
+                </div>
 
-      doc.setFont("helvetica", "bold");
-      doc.text("Próximos Passos:", 20, y);
-      y += 8;
+                <div class="glass-card p-8 rounded-3xl fade-in-up" style="animation-delay: 0.20s;">
+                    <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-[0.25em] mb-5">Plano de ação</h4>
+                    <div class="space-y-3">
+                        ${
+                            proximosPassos.length > 0
+                            ? proximosPassos.map(passo => `
+                                <div class="glass-soft rounded-2xl p-4 border border-slate-800">
+                                    <p class="text-emerald-300 text-sm font-semibold mb-2">${passo.quem || "Ação sugerida"}</p>
+                                    <p class="text-slate-300 text-sm leading-relaxed">${passo.como || "Sem orientação disponível."}</p>
+                                </div>
+                            `).join('')
+                            : `
+                                <div class="glass-soft rounded-2xl p-4 border border-slate-800">
+                                    <p class="text-slate-400 text-sm">Nenhum próximo passo foi sugerido.</p>
+                                </div>
+                            `
+                        }
+                    </div>
+                </div>
 
-      const passos = Array.isArray(d.proximos_passos) ? d.proximos_passos : [];
-      if (passos.length === 0) {
-        doc.setFont("helvetica", "normal");
-        doc.text("Nenhum próximo passo sugerido.", 20, y);
-        y += 8;
-      } else {
-        passos.forEach((passo, i) => {
-          if (y > 270) {
-            doc.addPage();
-            y = 20;
-          }
+                <button onclick="gerarPDF()" class="w-full btn-premium text-white py-4 rounded-2xl font-black transition-all flex items-center justify-center gap-2 uppercase tracking-[0.15em] text-sm fade-in-up" style="animation-delay: 0.24s;">
+                    <span>Baixar relatório jurídico</span>
+                </button>
+            `;
+        }
 
-          doc.setFont("helvetica", "bold");
-          doc.text(`${i + 1}. ${passo.quem || "Sugestão"}`, 20, y);
-          y += 6;
+        function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const d = dadosUltimaAnalise;
 
-          doc.setFont("helvetica", "normal");
-          const como = doc.splitTextToSize(passo.como || "Sem orientação disponível.", 165);
-          doc.text(como, 25, y);
-          y += como.length * 6 + 4;
-        });
-      }
+            if (!d) {
+                alert("Nenhuma análise disponível para exportar.");
+                return;
+            }
 
-      if (y > 260) {
-        doc.addPage();
-        y = 20;
-      }
+            const doc = new jsPDF();
+            let y = 20;
 
-      doc.setFont("helvetica", "bold");
-      doc.text("Veredito Final:", 20, y);
-      y += 8;
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.text("Relatório de Análise - Descomplic.AI", 20, y);
 
-      doc.setFont("helvetica", "normal");
-      const veredito = doc.splitTextToSize(d.veredito || "Sem veredito disponível.", 170);
-      doc.text(veredito, 20, y);
+            y += 10;
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 20, y);
 
-      doc.save("Analise_DescomplicAI.pdf");
-    }
-  </script>
+            y += 8;
+            doc.text(`Nível de risco: ${d.nivel_risco || "Não informado"}`, 20, y);
+
+            y += 12;
+            doc.setFont("helvetica", "bold");
+            doc.text("Resumo Executivo:", 20, y);
+
+            y += 8;
+            doc.setFont("helvetica", "normal");
+            const resumo = doc.splitTextToSize(d.resumo_curto || "Resumo não disponível.", 170);
+            doc.text(resumo, 20, y);
+            y += resumo.length * 6 + 6;
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Pontos Perigosos:", 20, y);
+            y += 8;
+
+            const pontos = Array.isArray(d.pontos_perigosos) ? d.pontos_perigosos : [];
+            if (pontos.length === 0) {
+                doc.setFont("helvetica", "normal");
+                doc.text("Nenhum ponto perigoso identificado.", 20, y);
+                y += 8;
+            } else {
+                pontos.forEach((p, i) => {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    doc.setFont("helvetica", "bold");
+                    doc.text(`${i + 1}. ${p.clausula || "Item"}`, 20, y);
+                    y += 6;
+
+                    doc.setFont("helvetica", "normal");
+                    const explicacao = doc.splitTextToSize(p.explicacao || "Sem explicação disponível.", 165);
+                    doc.text(explicacao, 25, y);
+                    y += explicacao.length * 6 + 4;
+                });
+            }
+
+            if (y > 250) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Próximos Passos:", 20, y);
+            y += 8;
+
+            const passos = Array.isArray(d.proximos_passos) ? d.proximos_passos : [];
+            if (passos.length === 0) {
+                doc.setFont("helvetica", "normal");
+                doc.text("Nenhum próximo passo sugerido.", 20, y);
+                y += 8;
+            } else {
+                passos.forEach((passo, i) => {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+
+                    doc.setFont("helvetica", "bold");
+                    doc.text(`${i + 1}. ${passo.quem || "Sugestão"}`, 20, y);
+                    y += 6;
+
+                    doc.setFont("helvetica", "normal");
+                    const como = doc.splitTextToSize(passo.como || "Sem orientação disponível.", 165);
+                    doc.text(como, 25, y);
+                    y += como.length * 6 + 4;
+                });
+            }
+
+            if (y > 260) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.text("Veredito Final:", 20, y);
+            y += 8;
+
+            doc.setFont("helvetica", "normal");
+            const veredito = doc.splitTextToSize(d.veredito || "Sem veredito disponível.", 170);
+            doc.text(veredito, 20, y);
+
+            doc.save("Analise_DescomplicAI.pdf");
+        }
+    </script>
 </body>
 </html>
